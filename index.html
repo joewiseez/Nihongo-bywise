@@ -49,8 +49,11 @@ h1,h2,h3{margin:0 0 8px;}
 .progress-bar{height:10px;background:var(--border);border-radius:6px;overflow:hidden;margin:6px 0;}
 .progress-fill{height:100%;background:var(--good);}
 nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;max-width:480px;margin:0 auto;}
-nav button{flex:1;background:none;border:none;padding:10px 4px;font-size:0.75em;color:var(--muted);cursor:pointer;}
+nav button{flex:1;background:none;border:none;padding:10px 4px 8px;font-size:0.75em;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;}
+nav button svg{transition:color 0.15s;}
+nav button .nav-dot{width:5px;height:5px;border-radius:50%;background:transparent;margin-top:1px;}
 nav button.active{color:var(--accent);font-weight:600;}
+nav button.active .nav-dot{background:var(--accent);}
 .flash{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px 16px;text-align:center;min-height:140px;display:flex;flex-direction:column;justify-content:center;cursor:pointer;}
 .hidden{display:none !important;}
 .opt-btn{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;color:var(--text);font-size:1em;}
@@ -60,6 +63,7 @@ nav button.active{color:var(--accent);font-weight:600;}
 .vocab-row{display:flex;align-items:center;justify-content:space-between;padding:14px 4px;border-bottom:1px solid var(--border);cursor:pointer;gap:10px;}
 .vocab-row-main{flex:1;min-width:0;}
 .vocab-row-title{font-weight:600;font-size:1.05em;}
+.speak-icon{user-select:none;-webkit-user-select:none;touch-action:manipulation;padding:2px 4px;display:inline-block;}
 .vocab-row-title .speak-icon{margin-left:4px;cursor:pointer;}
 .vocab-row-detail{margin-top:6px;}
 .vocab-row-detail .pill{font-size:0.72em;}
@@ -94,6 +98,13 @@ nav button.active{color:var(--accent);font-weight:600;}
 .vocab-detail{padding:0 2px 10px;color:var(--muted);font-size:0.85em;}
 .stat-row{display:flex;gap:8px;margin-bottom:12px;}
 .stat-box{flex:1;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 4px;text-align:center;}
+.stat-box.streak-box{background:linear-gradient(160deg,#fff4e6,#ffe8d6);border:1px solid #ffcf9e;}
+.stat-box.streak-box .stat-num{color:#e0621a;font-size:1.6em;}
+.stat-box.streak-box .flame-icon{font-size:1.3em;line-height:1;margin-bottom:2px;}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .stat-box.streak-box{background:linear-gradient(160deg,#3a2412,#2a1a0d);border-color:#7a4a1e;}
+}
+:root[data-theme="dark"] .stat-box.streak-box{background:linear-gradient(160deg,#3a2412,#2a1a0d);border-color:#7a4a1e;}
 .stat-num{font-size:1.4em;font-weight:700;color:var(--text);}
 .level-box{background:var(--accent2);color:#fff;border-radius:16px;padding:16px;margin-bottom:14px;}
 .level-box .muted{color:#cfe0f7;font-size:0.85em;}
@@ -105,6 +116,48 @@ nav button.active{color:var(--accent);font-weight:600;}
 .week-bar.today{background:var(--accent);}
 .belajar-card{display:flex;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;align-items:center;}
 .belajar-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3em;font-weight:700;flex-shrink:0;}
+.skill-path{position:relative;padding:10px 0 20px;}
+.skill-path::before{content:"";position:absolute;left:50%;top:6px;bottom:26px;width:0;border-left:4px dashed var(--border);transform:translateX(-50%);z-index:0;}
+.skill-node{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:118px;margin:0 auto 30px;cursor:pointer;text-align:center;}
+.skill-badge{position:absolute;top:-14px;background:var(--accent);color:#fff;font-size:0.68em;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
+.skill-ring{width:84px;height:84px;border-radius:50%;padding:6px;display:flex;align-items:center;justify-content:center;transition:background 0.3s;}
+.skill-ring.current{box-shadow:0 0 0 4px var(--bg),0 0 0 7px var(--accent);}
+.skill-ring-inner{width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.9em;font-weight:700;background:var(--card);}
+.skill-label{margin-top:8px;font-weight:700;font-size:0.95em;}
+.skill-sub{color:var(--muted);font-size:0.78em;margin-top:2px;}
+.total-ring{width:76px;height:76px;border-radius:50%;padding:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.total-ring-inner{width:100%;height:100%;border-radius:50%;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+@keyframes confetti-fall{
+  0%{transform:translateY(0) rotate(0deg);opacity:1;}
+  100%{transform:translateY(100vh) rotate(360deg);opacity:0;}
+}
+@keyframes pop-anim{
+  0%{transform:scale(1);}
+  40%{transform:scale(1.06);}
+  100%{transform:scale(1);}
+}
+@keyframes shake-anim{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-6px);}
+  40%{transform:translateX(6px);}
+  60%{transform:translateX(-4px);}
+  80%{transform:translateX(4px);}
+}
+.opt-btn.pop{animation:pop-anim 0.35s ease;}
+.opt-btn.shake{animation:shake-anim 0.35s ease;}
+.empty-good{background:linear-gradient(135deg,rgba(47,158,110,0.08),rgba(47,158,110,0.02));border-color:rgba(47,158,110,0.35)!important;}
+.latihan-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--card),var(--border));border-radius:18px;padding:18px;margin-bottom:14px;border:1px solid var(--border);}
+.latihan-hero-deco{position:absolute;top:10px;right:10px;font-size:2.4em;opacity:0.5;filter:blur(0.2px);}
+.latihan-progress-bar{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;}
+.latihan-card{border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px;}
+.latihan-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4em;font-weight:700;color:#fff;}
+.latihan-chevron{width:32px;height:32px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:1.2em;color:var(--text);cursor:pointer;flex-shrink:0;}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .latihan-card{background:var(--card)!important;border-color:var(--border)!important;}
+  :root:not([data-theme="light"]) .latihan-hero-deco{opacity:0.25;}
+}
+:root[data-theme="dark"] .latihan-card{background:var(--card)!important;border-color:var(--border)!important;}
+:root[data-theme="dark"] .latihan-hero-deco{opacity:0.25;}
 .back-link{display:inline-block;color:var(--accent);margin-bottom:10px;cursor:pointer;font-size:0.9em;}
 .chat-line{max-width:82%;padding:10px 14px;border-radius:14px;margin-bottom:12px;}
 .chat-line.a{background:var(--card);border:1px solid var(--border);margin-right:auto;border-bottom-left-radius:3px;}
@@ -120,10 +173,22 @@ nav button.active{color:var(--accent);font-weight:600;}
 </header>
 <div class="wrap" id="app"></div>
 <nav id="nav" class="hidden">
-  <button data-tab="home">🏠<br>Beranda</button>
-  <button data-tab="belajar">🎓<br>Belajar</button>
-  <button data-tab="quiz">📝<br>Latihan</button>
-  <button data-tab="profile">📊<br>Progres</button>
+  <button data-tab="home">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
+    <span class="nav-label">Beranda</span><span class="nav-dot"></span>
+  </button>
+  <button data-tab="belajar">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H12v18H6.5A2.5 2.5 0 0 1 4 18.5v-13Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H12v18h5.5a2.5 2.5 0 0 0 2.5-2.5v-13Z"/></svg>
+    <span class="nav-label">Belajar</span><span class="nav-dot"></span>
+  </button>
+  <button data-tab="quiz">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M4 9v6"/><path d="M20 9v6"/><path d="M6.5 12h11"/></svg>
+    <span class="nav-label">Latihan</span><span class="nav-dot"></span>
+  </button>
+  <button data-tab="profile">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M12 20V4"/><path d="M20 20v-7"/></svg>
+    <span class="nav-label">Progres</span><span class="nav-dot"></span>
+  </button>
 </nav>
 
 <script type="module">
@@ -712,10 +777,30 @@ function getWeekData(){
   }
   return out;
 }
+let ttsVoices = [];
+let ttsWarnedOnce = false;
+function loadTtsVoices(){
+  try{ ttsVoices = speechSynthesis.getVoices() || []; }catch(e){ ttsVoices = []; }
+}
+if('speechSynthesis' in window){
+  loadTtsVoices();
+  speechSynthesis.onvoiceschanged = loadTtsVoices;
+}
 function speak(text){
   try{
+    if(!('speechSynthesis' in window)){
+      if(!ttsWarnedOnce){ ttsWarnedOnce = true; alert('Browser ini tidak mendukung text-to-speech. Coba pakai Chrome terbaru.'); }
+      return;
+    }
+    speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'ja-JP';
+    const jaVoice = ttsVoices.find(v => v.lang && v.lang.toLowerCase().startsWith('ja'));
+    if(jaVoice) u.voice = jaVoice;
+    else if(ttsVoices.length && !ttsWarnedOnce){
+      ttsWarnedOnce = true;
+      alert('HP kamu belum punya suara Bahasa Jepang untuk text-to-speech. Coba install/aktifkan "Google Text-to-Speech" + paket bahasa Jepang lewat Setelan HP > Sistem > Bahasa & Input > Text-to-speech.');
+    }
     speechSynthesis.speak(u);
   }catch(e){}
 }
@@ -828,7 +913,7 @@ function renderHome(){
   app.innerHTML = `
     <div class="top"><h2>Konnichiwa👋 ${stats.streak} hari</h2></div>
     <div class="stat-row">
-      <div class="stat-box"><div class="stat-num">${stats.streak}</div><div class="muted">Streak</div></div>
+      <div class="stat-box streak-box"><div class="flame-icon">🔥</div><div class="stat-num">${stats.streak}</div><div class="muted">Streak</div></div>
       <div class="stat-box"><div class="stat-num">${stats.xp}</div><div class="muted">XP</div></div>
       <div class="stat-box"><div class="stat-num">${stats.todayDate===todayStr() ? stats.todayCount : 0}</div><div class="muted">Hari ini</div></div>
     </div>
@@ -843,14 +928,35 @@ function renderHome(){
       <h3>${weak.label}</h3>
       <p class="muted" style="margin:0">${weak.done}/${weak.total} selesai — ketuk untuk lanjutkan</p>
     </div>
+    ${reviewN === 0 ? `
+    <div class="card empty-good">
+      <div class="row" style="align-items:center;gap:10px">
+        <div style="font-size:2em">✨</div>
+        <div>
+          <h3 style="margin:0">Antrian Ulasan bersih!</h3>
+          <p class="muted" style="margin:4px 0 0">Belum ada kata/pola yang perlu diulang. Lanjut belajar hal baru, yuk!</p>
+        </div>
+      </div>
+    </div>` : `
     <div class="card" id="review-card" style="cursor:pointer">
       <div class="row" style="justify-content:space-between;align-items:center">
         <div><h3 style="margin:0">Antrian Ulasan</h3><p class="muted" style="margin:4px 0 0">${reviewN} kata/pola untuk diulas</p></div>
         <div style="font-size:1.3em">→</div>
       </div>
-    </div>
+    </div>`}
     <div class="card">
-      <h3>Progres JLPT N5-N4</h3>
+      <div class="row" style="align-items:center;gap:16px;margin-bottom:14px">
+        <div class="total-ring" style="background:conic-gradient(var(--accent) ${totalPct}%, var(--border) 0)">
+          <div class="total-ring-inner">
+            <b style="font-size:1.3em">${totalPct}%</b>
+            <span class="muted" style="font-size:0.68em">selesai</span>
+          </div>
+        </div>
+        <div>
+          <h3 style="margin:0 0 2px">Progres JLPT N5-N4</h3>
+          <p class="muted" style="margin:0;font-size:0.85em">Total dari semua kategori belajar</p>
+        </div>
+      </div>
       ${progressLine('Hiragana', kanaDone, kanaTotal)}
       ${progressLine('Katakana', kataDone, kataTotal)}
       ${progressLine('Kosakata', vocabDone, VOCAB.length)}
@@ -858,10 +964,6 @@ function renderHome(){
       ${progressLine('Angka', numberDone, NUMBERS.length)}
       ${progressLine('Percakapan', convDone, CONVERSATIONS.length)}
       ${progressLine('Tata Bahasa', grammarDone, GRAMMAR.length)}
-      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
-        <div class="row" style="justify-content:space-between"><b>Total keseluruhan</b><b>${totalPct}%</b></div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${totalPct}%"></div></div>
-      </div>
     </div>
     <div class="card">
       <h3>Statistik Mingguan</h3>
@@ -876,7 +978,8 @@ function renderHome(){
     if(weak.mode){ kanaMode = weak.mode; kanaSection='basic'; }
     goto(weak.tab);
   };
-  $('#review-card').onclick = startReviewQuiz;
+  const reviewCardEl = $('#review-card');
+  if(reviewCardEl) reviewCardEl.onclick = startReviewQuiz;
 }
 
 function renderBelajar(){
@@ -891,21 +994,28 @@ function renderBelajar(){
     {icon:'会', bg:'#fee2e2', fg:'#b91c1c', title:'Percakapan', sub:'会話 — Situasi sehari-hari', total:CONVERSATIONS.length, done:Object.keys(stats.conversationKnown).length, tab:'conversations'},
     {icon:'文', bg:'#ede9fe', fg:'#6d28d9', title:'Tata Bahasa', sub:'文法 — Pola kalimat N5-N4', total:GRAMMAR.length, done:Object.keys(stats.grammarMastered).length, tab:'grammar'},
   ];
-  app.innerHTML = `<h2>Belajar</h2><p class="muted">Pilih kategori untuk mulai belajar</p><div id="belajar-list"></div>`;
-  $('#belajar-list').innerHTML = items.map((it,idx)=>`
-    <div class="belajar-card" data-idx="${idx}">
-      <div class="belajar-icon" style="background:${it.bg};color:${it.fg}">${it.icon}</div>
-      <div style="flex:1;min-width:0">
-        <div class="row" style="justify-content:space-between;align-items:center">
-          <b>${it.title}</b><span class="pill">${it.total} materi</span>
-        </div>
-        <div class="muted" style="font-size:0.85em">${it.sub}</div>
-        <div class="muted" style="font-size:0.8em;margin-top:4px">Dipelajari ${it.done}/${it.total}</div>
-        <div class="progress-bar" style="margin-bottom:0"><div class="progress-fill" style="width:${100*it.done/it.total}%"></div></div>
+  const offsets = [-70, 70, -70, 70, -70, 70, 0];
+  const rec = weakestCategory();
+  const recIdx = items.findIndex(it => it.tab === rec.tab && (it.mode === rec.mode || (!it.mode && !rec.mode)));
+
+  app.innerHTML = `<h2>Belajar</h2><p class="muted">Ikuti jalurnya dari atas ke bawah, atau lompat ke kategori mana pun.</p>
+    <div class="skill-path" id="skill-path"></div>`;
+  const pathEl = $('#skill-path');
+  pathEl.innerHTML = items.map((it,idx)=>{
+    const pct = Math.round(100 * it.done / it.total);
+    const isCurrent = idx === recIdx;
+    return `
+    <div class="skill-node" data-idx="${idx}" style="transform:translateX(${offsets[idx]}px)">
+      ${isCurrent ? '<div class="skill-badge">Lanjutkan</div>' : ''}
+      <div class="skill-ring ${isCurrent?'current':''}" style="background:conic-gradient(var(--accent) ${pct}%, var(--border) 0)">
+        <div class="skill-ring-inner" style="background:${it.bg};color:${it.fg}">${it.icon}</div>
       </div>
-    </div>`).join('');
-  $('#belajar-list').querySelectorAll('.belajar-card').forEach((c,idx)=>{
-    c.onclick = ()=>{
+      <div class="skill-label">${it.title}</div>
+      <div class="skill-sub">${it.done}/${it.total} • ${pct}%</div>
+    </div>`;
+  }).join('');
+  pathEl.querySelectorAll('.skill-node').forEach((node,idx)=>{
+    node.onclick = ()=>{
       const it = items[idx];
       if(it.mode){ kanaMode = it.mode; kanaSection = 'basic'; }
       goto(it.tab);
@@ -1198,18 +1308,64 @@ function startVocabQuiz(level){
 
 function renderQuizHub(){
   const reviewN = reviewCount();
-  app.innerHTML = `<h2>Latihan</h2>
-    <div class="card"><h3>Ulasan</h3><p class="muted">${reviewN} kata/pola yang pernah salah, siap diulang</p><button class="btn" onclick="startReviewQuiz()">Mulai</button></div>
-    <div class="card"><h3>Hiragana</h3><p class="muted">Tebak romaji dari huruf</p><button class="btn" onclick="kanaMode='hiragana';kanaSection='basic';startKanaQuiz()">Mulai</button></div>
-    <div class="card"><h3>Katakana</h3><p class="muted">Tebak romaji dari huruf</p><button class="btn" onclick="kanaMode='katakana';kanaSection='basic';startKanaQuiz()">Mulai</button></div>
-    <div class="card"><h3>Angka</h3><p class="muted">Tebak cara baca angka 1-100</p><button class="btn" onclick="startNumberQuiz()">Mulai</button></div>
-    <div class="card"><h3>Percakapan</h3><p class="muted">Tebak arti kalimat dari dialog</p><button class="btn" onclick="startConversationQuiz()">Mulai</button></div>
-    <div class="card"><h3>Kosakata N5</h3><p class="muted">Tebak arti dalam Bahasa Indonesia</p><button class="btn" onclick="startVocabQuiz('N5')">Mulai</button></div>
-    <div class="card"><h3>Kosakata N4</h3><p class="muted">Tebak arti dalam Bahasa Indonesia</p><button class="btn" onclick="startVocabQuiz('N4')">Mulai</button></div>
-    <div class="card"><h3>Kosakata Semua</h3><p class="muted">Campuran N5 + N4</p><button class="btn" onclick="startVocabQuiz('all')">Mulai</button></div>
-    <div class="card"><h3>Kanji</h3><p class="muted">Tebak arti dari kanji</p><button class="btn" onclick="startKanjiQuiz()">Mulai</button></div>
-    <div class="card"><h3>Grammar</h3><p class="muted">Tebak kegunaan dari pola kalimat</p><button class="btn" onclick="startGrammarQuiz()">Mulai</button></div>
-    <div class="card"><h3>Campuran</h3><p class="muted">Gabungan semua materi</p><button class="btn" onclick="startMixedQuiz()">Mulai</button></div>`;
+  const n5Count = VOCAB.filter(w=>w.lvl==='N5').length;
+  const n4Count = VOCAB.filter(w=>w.lvl==='N4').length;
+  const kanaTotal = HIRAGANA.length + HIRAGANA_DAKUTEN.length + HIRAGANA_YOON.length;
+  const kataTotal = KATAKANA.length + KATAKANA_DAKUTEN.length + KATAKANA_YOON.length;
+
+  const cards = [
+    {id:'ulasan', icon:'🔁', color:'#14b8a6', tint:'#f0fdfa', border:'#99f6e4', title:'Ulasan', desc:'Ulangi kata & pola yang pernah salah biar makin nempel.', materi:reviewN, done:reviewN===0?1:0, total:1, action:()=>startReviewQuiz()},
+    {id:'hiragana', icon:'あ', color:'#fb7185', tint:'#fff1f2', border:'#fecdd3', title:'Hiragana', desc:'Pelajari huruf hiragana dari awal hingga lancar.', materi:kanaTotal, done:Object.keys(stats.kanaKnown).length, total:kanaTotal, action:()=>{ kanaMode='hiragana'; kanaSection='basic'; startKanaQuiz(); }},
+    {id:'katakana', icon:'ア', color:'#3b82f6', tint:'#eff6ff', border:'#bfdbfe', title:'Katakana', desc:'Pelajari huruf katakana untuk kata serapan & istilah modern.', materi:kataTotal, done:Object.keys(stats.katakanaKnown).length, total:kataTotal, action:()=>{ kanaMode='katakana'; kanaSection='basic'; startKanaQuiz(); }},
+    {id:'angka', icon:'123', color:'#f59e0b', tint:'#fffbeb', border:'#fde68a', title:'Angka', desc:'Pelajari cara baca angka 1-100 dalam bahasa Jepang.', materi:NUMBERS.length, done:Object.keys(stats.numberKnown).length, total:NUMBERS.length, action:()=>startNumberQuiz()},
+    {id:'percakapan', icon:'💬', color:'#ef4444', tint:'#fef2f2', border:'#fecaca', title:'Percakapan', desc:'Latihan dialog untuk situasi sehari-hari.', materi:CONVERSATIONS.length, done:Object.keys(stats.conversationKnown).length, total:CONVERSATIONS.length, action:()=>startConversationQuiz()},
+    {id:'vocab-n5', icon:'語', color:'#22c55e', tint:'#f0fdf4', border:'#bbf7d0', title:'Kosakata N5', desc:'Kosakata dasar untuk level N5.', materi:n5Count, done:Object.keys(stats.vocabMastered).filter(jp=>VOCAB.find(w=>w.jp===jp&&w.lvl==='N5')).length, total:n5Count, action:()=>startVocabQuiz('N5')},
+    {id:'vocab-n4', icon:'語', color:'#16a34a', tint:'#f0fdf4', border:'#bbf7d0', title:'Kosakata N4', desc:'Kosakata lanjutan untuk level N4.', materi:n4Count, done:Object.keys(stats.vocabMastered).filter(jp=>VOCAB.find(w=>w.jp===jp&&w.lvl==='N4')).length, total:n4Count, action:()=>startVocabQuiz('N4')},
+    {id:'vocab-all', icon:'語', color:'#059669', tint:'#ecfdf5', border:'#a7f3d0', title:'Kosakata Semua', desc:'Campuran kosakata N5 dan N4 sekaligus.', materi:VOCAB.length, done:Object.keys(stats.vocabMastered).length, total:VOCAB.length, action:()=>startVocabQuiz('all')},
+    {id:'kanji', icon:'漢', color:'#6366f1', tint:'#eef2ff', border:'#c7d2fe', title:'Kanji', desc:'Tebak arti dari kanji dasar N5.', materi:KANJI.length, done:Object.keys(stats.kanjiKnown).length, total:KANJI.length, action:()=>startKanjiQuiz()},
+    {id:'grammar', icon:'文', color:'#8b5cf6', tint:'#f5f3ff', border:'#ddd6fe', title:'Tata Bahasa', desc:'Tebak kegunaan dari pola kalimat N5-N4.', materi:GRAMMAR.length, done:Object.keys(stats.grammarMastered).length, total:GRAMMAR.length, action:()=>startGrammarQuiz()},
+    {id:'campuran', icon:'🎲', color:'#64748b', tint:'#f8fafc', border:'#e2e8f0', title:'Campuran', desc:'Gabungan semua materi buat tantangan penuh.', materi:null, done:0, total:1, action:()=>startMixedQuiz()},
+  ];
+
+  const trackable = cards.filter(c=>c.id!=='campuran' && c.id!=='vocab-all');
+  const doneCount = trackable.filter(c=>c.done >= c.total && c.total>0).length;
+  const pct = Math.round(100*doneCount/trackable.length);
+
+  app.innerHTML = `
+    <div class="latihan-hero">
+      <span class="pill" style="background:var(--border);color:var(--accent2)">Latihan</span>
+      <h1 style="margin:8px 0 4px">Saatnya Berlatih</h1>
+      <p class="muted" style="margin:0">Asah kemampuan bahasa Jepang kamu dengan berbagai latihan interaktif.</p>
+      <div class="latihan-hero-deco">⛩️🌸🗻</div>
+    </div>
+    <div class="latihan-progress-bar">
+      <div style="font-size:1.6em">🎯</div>
+      <div style="flex:1">
+        <p class="muted" style="margin:0 0 2px">Progres kamu</p>
+        <p style="margin:0;font-weight:700">${doneCount} dari ${trackable.length} latihan selesai</p>
+      </div>
+      <div style="text-align:right;min-width:70px">
+        <div class="progress-bar" style="width:70px;margin-bottom:2px"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <span class="muted" style="font-size:0.8em">${pct}%</span>
+      </div>
+    </div>
+    <div id="latihan-list"></div>`;
+
+  $('#latihan-list').innerHTML = cards.map((c,idx)=>`
+    <div class="latihan-card" style="background:${c.tint};border-color:${c.border}">
+      <div class="row" style="justify-content:space-between;align-items:flex-start">
+        <div class="latihan-icon" style="background:${c.color}">${c.icon}</div>
+        <div class="latihan-chevron" data-idx="${idx}">›</div>
+      </div>
+      <h3 style="margin:12px 0 4px">${c.title}</h3>
+      <p class="muted" style="margin:0 0 8px">${c.desc}</p>
+      <p class="muted" style="margin:0 0 12px;font-size:0.82em">📖 ${c.id==='ulasan' ? c.materi+' perlu diulas' : c.id==='campuran' ? 'Semua materi' : c.done+'/'+c.materi+' pelajaran'}</p>
+      <button class="btn" data-idx="${idx}">Mulai Latihan →</button>
+    </div>`).join('');
+
+  $('#latihan-list').querySelectorAll('[data-idx]').forEach(el=>{
+    el.onclick = ()=>{ cards[Number(el.dataset.idx)].action(); };
+  });
 }
 
 function startMixedQuiz(){
@@ -1227,6 +1383,24 @@ function startMixedQuiz(){
     ...GRAMMAR.map(g=>({q:g.pattern,a:g.meaning,opts:'grammar',key:g.pattern,track:'grammar'})),
   ];
   runQuiz(pool.sort(()=>Math.random()-0.5).slice(0,20), 'Campuran');
+}
+
+function fireConfetti(){
+  const colors = ['#433bff','#f59e0b','#22c55e','#ef4444','#3b82f6','#fb7185'];
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden;';
+  document.body.appendChild(wrap);
+  for(let i=0;i<28;i++){
+    const p = document.createElement('div');
+    const size = 6 + Math.random()*6;
+    const left = 10 + Math.random()*80;
+    const dur = 1.4 + Math.random()*1;
+    const delay = Math.random()*0.3;
+    const rot = Math.random()*360;
+    p.style.cssText = `position:absolute;top:-10px;left:${left}%;width:${size}px;height:${size*1.4}px;background:${colors[i%colors.length]};opacity:0.9;border-radius:2px;transform:rotate(${rot}deg);animation:confetti-fall ${dur}s ease-in ${delay}s forwards;`;
+    wrap.appendChild(p);
+  }
+  setTimeout(()=> wrap.remove(), 2800);
 }
 
 function runQuiz(items, title){
@@ -1247,12 +1421,14 @@ function runQuiz(items, title){
     if(idx >= items.length){
       const xpGain = correct*5;
       addXp(xpGain); checkStreak(); recordActivity(xpGain);
+      const ratio = correct/items.length;
       app.innerHTML = `<div class="card" style="text-align:center">
-        <h2>Selesai! 🎉</h2>
+        <h2>${ratio>=0.8?'Mantap! 🎉':ratio>=0.5?'Selesai! 👍':'Selesai 🙂'}</h2>
         <p>Benar: ${correct}/${items.length}</p>
         <p class="muted">+${xpGain} XP</p>
         <button class="btn" onclick="goto('home')">Kembali ke Home</button>
       </div>`;
+      if(ratio>=0.5) fireConfetti();
       return;
     }
     const it = items[idx];
@@ -1268,9 +1444,9 @@ function runQuiz(items, title){
       b.onclick = ()=>{
         optsEl.querySelectorAll('.opt-btn').forEach(x=>x.onclick=null);
         const isCorrect = b.dataset.o === it.a;
-        if(isCorrect){ b.classList.add('correct'); correct++; }
+        if(isCorrect){ b.classList.add('correct','pop'); correct++; }
         else {
-          b.classList.add('wrong');
+          b.classList.add('wrong','shake');
           optsEl.querySelectorAll('.opt-btn').forEach(x=>{ if(x.dataset.o===it.a) x.classList.add('correct'); });
         }
         if(it.track && it.key){
